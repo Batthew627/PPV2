@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Value Updater</title>
+</head>
+<body>
+  <h1><span id="value" style="font-family: 'Comic Sans MS', cursive; color: black;">Loading...</span></h1>
+  <script>
+    setInterval(function() {
+      fetch('http://localhost:8081/ppTillNum?SSid=<%-SSid%>&num=<%-num%>')
+        .then(response => response.text())
+        .then(data => document.getElementById('value').innerText = `${data} pp until i hit #69 (nice)`)
+        .catch(error => console.error(error));
+    }, 1000); // update every 10 second
+  </script>
+</body>
+</html>

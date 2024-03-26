@@ -1,5 +1,7 @@
 import ScoreSaberAPI from "scoresaber.js";
 import express from 'express';
+import path from "path";
+
 
 async function getPPDifference(playerID1: string, playerID2 : string) {
     const player1PP =(await (ScoreSaberAPI.fetchBasicPlayer(playerID1))).pp
@@ -165,40 +167,41 @@ export const calcPpBoundary = (rankedScores: any[], expectedPp = 1) => {
 
 	return calcRawPpAtIdx(rankedScorePps, 0, expectedPp);
 };
+
+
 const app = express();
 const port = 8081;
 var cors = require('cors')
+var ejs = require("ejs")
+var fs = require("fs")
+
 app.use(cors())
+app.set('view engine', 'ejs');
 
 app.listen(port, () => console.log(`Server listening on port: ${port}`));
-app.get('/AvC', async (_req: any, res: { send: (arg0: string) => void; }) => {
-    res.send((await getPPDifference('76561199073044136', '76561198024304712')).toString());
-});
-app.get('/CvA', async (_req: any, res: { send: (arg0: string) => void; }) => {
-    res.send((await getPPDifference('76561198024304712','76561199073044136')).toString());
-});
-app.get('/cerTop500', async (_req: any, res: { send: (arg0: string) => void; }) => {
-    res.send((await diffToTopX('76561198024304712',500)).toString());
-});
-app.get('/edgTop200', async (_req: any, res: { send: (arg0: string) => void; }) => {
-    res.send((await diffToTopX('76561198869979182',150)).toString());
-});
-app.get('/batTop1K', async (_req: any, res: { send: (arg0: string) => void; }) => {
-    res.send((await diffToTopX('76561198121538359',1000)).toString());
-});
-app.get('/bizzyNo2', async (_req: any, res: { send: (arg0: string) => void; }) => {
-    res.send((await diffToTopX('3225556157461414',2)).toString());
-});
-app.get('/sweedTop100', async (_req: any, res: { send: (arg0: string) => void; }) => {
-    res.send((await diffToTopX('76561199117055032',100)).toString());
-});
-app.get('/davinNo14', async (_req: any, res: { send: (arg0: string) => void; }) => {
-    res.send((await diffToTopX('76561199017330732',14)).toString());
-});
-app.get('/SgtvSte', async (_req: any, res: { send: (arg0: string) => void; }) => {
-    res.send((await diffToTopX('76561199122886452',750)).toString());
-});
-app.get('/jammyNo69', async (_req: any, res: { send: (arg0: string) => void; }) => {
-    res.send((await diffToTopX('76561198180136111',69)).toString());
+
+app.get('/toPlayer', async function(req, res) {
+	var P2;
+	if (req.query.PlayerSSid != undefined) {
+		P2 = await ScoreSaberAPI.fetchBasicPlayer(req.query.PlayerSSid.toString())
+	} else {res.send("Bad url error"); return;}
+	var data = {"SSid" : req.query.SSid , "PlayerSSid" : req.query.PlayerSSid , "P2name" : P2.name};
+	fs.readFile("html/overlayToPlayer.html" , "utf-8" , (err : any , html : any) => {
+		res.send(ejs.render(html , data))
+	})
 });
 
+app.get('/toNum', function(req, res) {
+	var data = {"SSid" : req.query.SSid , "num" : req.query.num};
+	fs.readFile("html/overlayToNum.html" , "utf-8" , (err : any , html : any) => {
+		res.send(ejs.render(html , data))
+	})
+});
+
+app.get('/ppTillNum', async (_req: any, res: { send: (arg0: string) => void; }) => {
+    res.send((await diffToTopX(_req.query.SSid, _req.query.num)).toString());
+});
+
+app.get('/ppTillPlayer', async (_req: any, res: { send: (arg0: string) => void; }) => {
+    res.send((await getPPDifference(_req.query.SSid, _req.query.PlayerSSid)).toString());
+});

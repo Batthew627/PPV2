@@ -1,6 +1,5 @@
 import ScoreSaberAPI from "scoresaber.js";
 import express from 'express';
-import path from "path";
 
 
 async function getPPDifference(playerID1: string, playerID2 : string) {
@@ -204,4 +203,11 @@ app.get('/ppTillNum', async (_req: any, res: { send: (arg0: string) => void; }) 
 
 app.get('/ppTillPlayer', async (_req: any, res: { send: (arg0: string) => void; }) => {
     res.send((await getPPDifference(_req.query.SSid, _req.query.PlayerSSid)).toString());
+});
+
+app.get('/plusOne' ,  async (_req: any, res: { send: (arg0: string) => void; }) => {
+    var scores = await ScoreSaberAPI.fetchAllScores(_req.query.SSid);
+	var onePP = calcPpBoundary(scores);
+	if (onePP == null) {onePP = -1};
+	res.send(onePP.toString())
 });

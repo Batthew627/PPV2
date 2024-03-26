@@ -9,7 +9,7 @@
     setInterval(function() {
       fetch('http://localhost:8081/ppTillNum?SSid=<%-SSid%>&num=<%-num%>')
         .then(response => response.text())
-        .then(data => document.getElementById('value').innerText = `${data} pp until i hit #69 (nice)`)
+        .then(data => document.getElementById('value').innerText = `${data} pp until i hit #<%-num%>`)
         .catch(error => console.error(error));
     }, 1000); // update every 10 second
   </script>

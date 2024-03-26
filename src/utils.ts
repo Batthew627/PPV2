@@ -1,21 +1,4 @@
-import ScoreSaberAPI from "scoresaber.js";
-import express from 'express';
-
-
-async function getPPDifference(playerID1: string, playerID2 : string) {
-    const player1PP =(await (ScoreSaberAPI.fetchBasicPlayer(playerID1))).pp
-    const player2PP = (await (ScoreSaberAPI.fetchBasicPlayer(playerID2))).pp
-    //console.log(player1PP)
-    //console.log(player2PP)
-    const difference = Math.floor((player2PP - player1PP)*100)/100
-    return(difference)
-}
-
-async function diffToTopX(playerID : string,rank : number) {
-    const no1K = (await ScoreSaberAPI.fetchPlayerByRank(rank)).id
-    //console.log(no1K)
-    return (getPPDifference(playerID,no1K))
-}
+import ScoreSaberAPI, { PlayerScore } from "scoresaber.js";
 
 export const WEIGHT_COEFFICIENT = 0.965;
 export const PP_PER_STAR = 42.114296;
@@ -90,14 +73,14 @@ export function accFromPpFactor(ppFactor: number) {
 	return from.at + (to.at - from.at) * progress;
 }
 
-export const getTotalPpFromSortedPps = (ppArray: any[], startIdx = 0) =>
+export const getTotalPpFromSortedPps = (ppArray: number[], startIdx = 0) =>
 	ppArray.reduce((cum: number, pp: number, idx: number) => cum + Math.pow(WEIGHT_COEFFICIENT, idx + startIdx) * pp, 0);
 
-const getTotalPp = (scores: any[]) =>
+const getTotalPp = (scores: PlayerScore[]) =>
 	scores && Array.isArray(scores) ? getTotalPpFromSortedPps(scores.map(s => s?.score?.pp).sort((a, b) => b - a)) : null;
 
-const convertScoresToObject = (scores: any[], idFunc = (score: { leaderboard: { id: any; }; }) => score?.leaderboard?.id, asArray = false) =>
-	scores.reduce((scoresObj: { [x: string]: any; }, score: any) => {
+const convertScoresToObject = (scores: PlayerScore[], idFunc = (score: { leaderboard: { id: any }; }) => score?.leaderboard?.id, asArray = false) =>
+	scores.reduce((scoresObj: { [x: string]: any; }, score: PlayerScore) => {
 		const _id = idFunc(score);
 		if (!_id) return scoresObj;
 
@@ -112,7 +95,7 @@ const convertScoresToObject = (scores: any[], idFunc = (score: { leaderboard: { 
 		return scoresObj;
 	}, {});
 
-export const getTotalPlayerPp = (scores: any, modifiedScores = {}) =>
+export const getTotalPlayerPp = (scores: PlayerScore[], modifiedScores = {}) =>
 	getTotalPp(
 		Object.values({
 			...convertScoresToObject(scores),
@@ -120,7 +103,7 @@ export const getTotalPlayerPp = (scores: any, modifiedScores = {}) =>
 		})
 	);
 
-export function getWhatIfScore(scores: any, leaderboardId: any, pp = 0) {
+export function getWhatIfScore(scores: PlayerScore[], leaderboardId: string, pp = 0) {
 	const currentTotalPp = getTotalPlayerPp(scores);
 	if (!currentTotalPp) return null;
 
@@ -129,14 +112,14 @@ export function getWhatIfScore(scores: any, leaderboardId: any, pp = 0) {
 	return {
 		currentTotalPp,
 		newTotalPp,
-		diff: newTotalPp - currentTotalPp,
+		diff: newTotalPp! - currentTotalPp,
 	};
 }
 
-export const calcPpBoundary = (rankedScores: any[], expectedPp = 1) => {
+export const calcPpBoundary = (rankedScores: PlayerScore[], expectedPp = 1) => {
 	if (!rankedScores || !Array.isArray(rankedScores)) return null;
 
-	const calcRawPpAtIdx = (bottomScores: any[], idx: number, expected: number) => {
+	const calcRawPpAtIdx = (bottomScores: number[], idx: number, expected: number) => {
 		const oldBottomPp = getTotalPpFromSortedPps(bottomScores, idx);
 		const newBottomPp = getTotalPpFromSortedPps(bottomScores, idx + 1);
 
@@ -167,47 +150,20 @@ export const calcPpBoundary = (rankedScores: any[], expectedPp = 1) => {
 	return calcRawPpAtIdx(rankedScorePps, 0, expectedPp);
 };
 
+//Above code was used from https://github.com/motzel/ppcalc/blob/master/src/
 
-const app = express();
-const port = 8081;
-var cors = require('cors')
-var ejs = require("ejs")
-var fs = require("fs")
+export const  getPPDifference = async (playerID1: string, playerID2 : string) => {
+    const player1PP =(await (ScoreSaberAPI.fetchBasicPlayer(playerID1))).pp
+    const player2PP = (await (ScoreSaberAPI.fetchBasicPlayer(playerID2))).pp
+    //console.log(player1PP)
+    //console.log(player2PP)
+    const difference = Math.floor((player2PP - player1PP)*100)/100
+    return(difference)
+}
 
-app.use(cors())
-app.set('view engine', 'ejs');
+export const diffToTopX= async(playerID : string,rank : number) => {
+    const no1K = (await ScoreSaberAPI.fetchPlayerByRank(rank)).id
+    //console.log(no1K)
+    return (getPPDifference(playerID,no1K))
+}
 
-app.listen(port, () => console.log(`Server listening on port: ${port}`));
-
-app.get('/toPlayer', async function(req, res) {
-	var P2;
-	if (req.query.PlayerSSid != undefined) {
-		P2 = await ScoreSaberAPI.fetchBasicPlayer(req.query.PlayerSSid.toString())
-	} else {res.send("Bad url error"); return;}
-	var data = {"SSid" : req.query.SSid , "PlayerSSid" : req.query.PlayerSSid , "P2name" : P2.name};
-	fs.readFile("html/overlayToPlayer.html" , "utf-8" , (err : any , html : any) => {
-		res.send(ejs.render(html , data))
-	})
-});
-
-app.get('/toNum', function(req, res) {
-	var data = {"SSid" : req.query.SSid , "num" : req.query.num};
-	fs.readFile("html/overlayToNum.html" , "utf-8" , (err : any , html : any) => {
-		res.send(ejs.render(html , data))
-	})
-});
-
-app.get('/ppTillNum', async (_req: any, res: { send: (arg0: string) => void; }) => {
-    res.send((await diffToTopX(_req.query.SSid, _req.query.num)).toString());
-});
-
-app.get('/ppTillPlayer', async (_req: any, res: { send: (arg0: string) => void; }) => {
-    res.send((await getPPDifference(_req.query.SSid, _req.query.PlayerSSid)).toString());
-});
-
-app.get('/plusOne' ,  async (_req: any, res: { send: (arg0: string) => void; }) => {
-    var scores = await ScoreSaberAPI.fetchAllScores(_req.query.SSid);
-	var onePP = calcPpBoundary(scores);
-	if (onePP == null) {onePP = -1};
-	res.send(onePP.toString())
-});

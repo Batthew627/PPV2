@@ -31,6 +31,13 @@ app.get('/toNum', function(req, res) {
 		res.send(ejs.render(html , data))
 	})
 });
+app.get('/plusOne', function(req, res) {
+	var data = {"SSid" : req.query.SSid};
+	fs.readFile("../html/overlayPlus1PP.html" , "utf-8" , (err : any , html : any) => {
+		res.send(ejs.render(html , data))
+	})
+});
+
 
 app.get('/ppToNum', async (req :any, res: { send: (arg0: string) => void; }) => {
     res.send((await diffToTopX(req.query.SSid, req.query.num)).toString());
@@ -40,9 +47,10 @@ app.get('/ppToPlayer', async (req: any, res: { send: (arg0: string) => void; }) 
     res.send((await getPPDifference(req.query.SSid, req.query.PlayerSSid)).toString());
 });
 
-app.get('/plusOne' ,  async (req: any, res: { send: (arg0: string) => void; }) => {
+app.get('/plusOnePP' ,  async (req: any, res: { send: (arg0: string) => void; }) => {
     var scores = await ScoreSaberAPI.fetchAllScores(req.query.SSid);
-	var onePP = calcPpBoundary(scores);
+	var onePP = Math.round(calcPpBoundary(scores)!*100)/100;
 	if (onePP == null) {onePP = -1};
+
 	res.send(onePP.toString())
 });

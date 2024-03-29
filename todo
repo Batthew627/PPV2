@@ -1,1 +1,5 @@
-☐ 
+☐ config file
+    switch localhost and server
+    change update rate 
+
+☐ error handleing so that the server doesnt explode on a bad url

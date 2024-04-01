@@ -3,14 +3,20 @@ import * as fs from "fs";
 
 import * as config from "../config.json"
 export const CONFIG : iConfig = {
-	SERVER : config.SERVER
+	SERVER : config.SERVER,
+	COLOUR : config.COLOUR,
+	INTERVAL : config.INTERVAL,
+	ONEPPINTERVAL:config.ONEPPINTERVAL
 };
 
 export const WEIGHT_COEFFICIENT = 0.965;
 export const PP_PER_STAR = 42.114296;
 
 export interface iConfig {
-	SERVER : string
+	SERVER : string,
+	COLOUR:string,
+	INTERVAL:number
+	ONEPPINTERVAL:number
 }
 
 const ppCurve = [

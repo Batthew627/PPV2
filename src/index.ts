@@ -23,12 +23,14 @@ app.get('/toPlayer', async function(req, res) {
 		"SSid" : req.query.SSid,
 		"targetSSid" : req.query.targetSSid,
 		"P2name" : P2.name,
-		"SERVER" : CONFIG.SERVER
+		"SERVER" : CONFIG.SERVER,
+		"COLOUR" : CONFIG.COLOUR,
+		"INTERVAL" : CONFIG.INTERVAL
 	};
 	if (req.query.PlayerSSid == undefined || req.query.SSid == undefined) {
 		res.send("Please Provide your own scoresaber ID and your targets scoresaber ID in the URL <br> Usage: batthew.co.uk:8081/toPlayer?SSid=1234&targetSSid=10")
 	}
-	fs.readFile("../html/overlayToPlayer.html" , "utf-8" , (err : string , html : string) => {
+	fs.readFile("./html/overlayToPlayer.html" , "utf-8" , (err : string , html : string) => {
 		res.send(ejs.render(html , data))
 	})
 });
@@ -37,27 +39,31 @@ app.get('/toNum', function(req, res) {
 	var data = {
 		"SSid" : req.query.SSid, 
 		"num" : req.query.num,
-		"SERVER" : CONFIG.SERVER
+		"SERVER" : CONFIG.SERVER,
+		"COLOUR" : CONFIG.COLOUR,
+		"INTERVAL" : CONFIG.INTERVAL
 	};
 	console.log(req.query.SSid)
 	if(req.query.SSid == undefined || req.query.num == undefined){
 		res.send("Please provide a scoresaber ID and a target number <br> Usage: batthew.co.uk:8081/toNum?SSid=1234&num=10")
 		return
 	}
-	fs.readFile("../html/overlayToNum.html" , "utf-8" , (err : any , html : any) => {
+	fs.readFile("./html/overlayToNum.html" , "utf-8" , (err : any , html : any) => {
 		res.send(ejs.render(html , data))
 	})
 });
 app.get('/plusOne', function(req, res) {
 	var data = {
 		"SSid" : req.query.SSid,
-		"SERVER" : CONFIG.SERVER
+		"SERVER" : CONFIG.SERVER,
+		"COLOUR" : CONFIG.COLOUR,
+		"INTERVAL" : CONFIG.ONEPPINTERVAL
 	};
 	if(req.query.SSid == undefined){
 		res.send("Please provide a scoresaber ID <br> Usage: batthew.co.uk:8081/plusOne?SSid=1234")
 		return
 	}
-	fs.readFile("../html/overlayPlus1PP.html" , "utf-8" , (err : any , html : any) => {
+	fs.readFile("./html/overlayPlus1PP.html" , "utf-8" , (err : any , html : any) => {
 		res.send(ejs.render(html , data))
 	})
 });

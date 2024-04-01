@@ -1,7 +1,17 @@
 import ScoreSaberAPI, { PlayerScore } from "scoresaber.js";
+import * as fs from "fs";
+
+import * as config from "../config.json"
+export const CONFIG : iConfig = {
+	SERVER : config.SERVER
+};
 
 export const WEIGHT_COEFFICIENT = 0.965;
 export const PP_PER_STAR = 42.114296;
+
+export interface iConfig {
+	SERVER : string
+}
 
 const ppCurve = [
 	{at: 0.0, value: 0.0},
@@ -41,24 +51,24 @@ const ppCurve = [
 	{at: 99.9, value: 4.715470646416203},
 	{at: 99.95, value: 5.019543595874787},
 	{at: 100.0, value: 5.367394282890631},
-];
+];	
 
 export function ppFactorFromAcc(acc: number) {
 	if (!acc || acc <= 0) {
 		return 0;
-	}
+	}	
 	let index = ppCurve.findIndex(o => o.at >= acc);
 	if (index === -1) {
 		return ppCurve[ppCurve.length - 1].value;
-	}
+	}	
 	if (!index) {
 		return ppCurve[0].value;
-	}
+	}	
 	let from = ppCurve[index - 1];
 	let to = ppCurve[index];
 	let progress = (acc - from.at) / (to.at - from.at);
 	return from.value + (to.value - from.value) * progress;
-}
+}	
 
 export function accFromPpFactor(ppFactor: number) {
 	if (!ppFactor || ppFactor <= 0) return 0;
@@ -71,15 +81,15 @@ export function accFromPpFactor(ppFactor: number) {
 	const progress = (ppFactor - from.value) / (to.value - from.value);
 
 	return from.at + (to.at - from.at) * progress;
-}
+}	
 
 export const getTotalPpFromSortedPps = (ppArray: number[], startIdx = 0) =>
 	ppArray.reduce((cum: number, pp: number, idx: number) => cum + Math.pow(WEIGHT_COEFFICIENT, idx + startIdx) * pp, 0);
 
-const getTotalPp = (scores: PlayerScore[]) =>
+const getTotalPp = (scores: PlayerScore[]) =>	
 	scores && Array.isArray(scores) ? getTotalPpFromSortedPps(scores.map(s => s?.score?.pp).sort((a, b) => b - a)) : null;
 
-const convertScoresToObject = (scores: PlayerScore[], idFunc = (score: { leaderboard: { id: any }; }) => score?.leaderboard?.id, asArray = false) =>
+const convertScoresToObject = (scores: PlayerScore[], idFunc = (score: { leaderboard: { id: any }; }) => score?.leaderboard?.id, asArray = false) =>	
 	scores.reduce((scoresObj: { [x: string]: any; }, score: PlayerScore) => {
 		const _id = idFunc(score);
 		if (!_id) return scoresObj;
@@ -90,18 +100,18 @@ const convertScoresToObject = (scores: PlayerScore[], idFunc = (score: { leaderb
 			scoresObj[_id].push({...score});
 		} else {
 			scoresObj[_id] = {...score};
-		}
+		}	
 
 		return scoresObj;
-	}, {});
+	}, {});	
 
-export const getTotalPlayerPp = (scores: PlayerScore[], modifiedScores = {}) =>
+export const getTotalPlayerPp = (scores: PlayerScore[], modifiedScores = {}) =>	
 	getTotalPp(
 		Object.values({
 			...convertScoresToObject(scores),
 			...modifiedScores,
-		})
-	);
+		})	
+	);	
 
 export function getWhatIfScore(scores: PlayerScore[], leaderboardId: string, pp = 0) {
 	const currentTotalPp = getTotalPlayerPp(scores);
@@ -113,8 +123,8 @@ export function getWhatIfScore(scores: PlayerScore[], leaderboardId: string, pp 
 		currentTotalPp,
 		newTotalPp,
 		diff: newTotalPp! - currentTotalPp,
-	};
-}
+	};	
+}	
 
 export const calcPpBoundary = (rankedScores: PlayerScore[], expectedPp = 1) => {
 	if (!rankedScores || !Array.isArray(rankedScores)) return null;
@@ -126,7 +136,7 @@ export const calcPpBoundary = (rankedScores: PlayerScore[], expectedPp = 1) => {
 		// 0.965^idx * rawPpToFind = expected + oldBottomPp - newBottomPp;
 		// rawPpToFind = (expected + oldBottomPp - newBottomPp) / 0.965^idx;
 		return (expected + oldBottomPp - newBottomPp) / Math.pow(WEIGHT_COEFFICIENT, idx);
-	};
+	};	
 
 	const rankedScorePps = rankedScores.map(s => s?.score?.pp ?? 0).sort((a, b) => b - a);
 
@@ -142,13 +152,13 @@ export const calcPpBoundary = (rankedScores: PlayerScore[], expectedPp = 1) => {
 
 		if (diff > expectedPp) {
 			return calcRawPpAtIdx(rankedScorePps.slice(idx + 1), idx + 1, expectedPp);
-		}
+		}	
 
 		idx--;
-	}
+	}	
 
 	return calcRawPpAtIdx(rankedScorePps, 0, expectedPp);
-};
+};	
 
 //Above code was used from https://github.com/motzel/ppcalc/blob/master/src/
 
@@ -165,6 +175,7 @@ export const  getPPDifference = async (playerID1: string, playerID2 : string):Pr
     //console.log(player2PP)
 }
 
+
 export const diffToTopX= async(playerID : string,rank : number):Promise<any> => {
 	try {
 		const rankX = (await ScoreSaberAPI.fetchPlayerByRank(rank)).id
@@ -172,6 +183,6 @@ export const diffToTopX= async(playerID : string,rank : number):Promise<any> => 
 	} catch (error) {
 		return(error)
 	}
-    //console.log(no1K)
+    //console.log(rankX)
 }
 

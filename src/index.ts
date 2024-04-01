@@ -1,7 +1,6 @@
 import ScoreSaberAPI from "scoresaber.js";
 import express from 'express';
-import { calcPpBoundary, diffToTopX, getPPDifference } from "./utils";
-
+import { calcPpBoundary, diffToTopX, getPPDifference, CONFIG } from "./utils";
 
 const app = express();
 const port = 8081;
@@ -9,13 +8,21 @@ var cors = require('cors')
 var ejs = require("ejs")
 var fs = require("fs")
 
+
 app.use(cors())
 app.set('view engine', 'ejs');
 
 app.listen(port, () => console.log(`Server listening on port: ${port}`));
 
 app.get('/toPlayer', async function(req, res) {
-	var P2;
+
+	console.log(CONFIG.SERVER)
+	var data = {
+		"SSid" : req.query.SSid,
+		"targetSSid" : req.query.targetSSid,
+		"P2name" : P2.name,
+		"SERVER" : CONFIG.SERVER
+	};
 	if (req.query.PlayerSSid == undefined || req.query.SSid == undefined) {
 		res.send("Please Provide your own scoresaber ID and your targets scoresaber ID in the URL <br> Usage: batthew.co.uk:8081/toPlayer?SSid=1234&targetSSid=10")
 	}
@@ -27,6 +34,11 @@ app.get('/toPlayer', async function(req, res) {
 });
 
 app.get('/toNum', function(req, res) {
+	var data = {
+		"SSid" : req.query.SSid, 
+		"num" : req.query.num,
+		"SERVER" : CONFIG.SERVER
+	};
 	console.log(req.query.SSid)
 	if(req.query.SSid == undefined || req.query.num == undefined){
 		res.send("Please provide a scoresaber ID and a target number <br> Usage: batthew.co.uk:8081/toNum?SSid=1234&num=10")
@@ -38,6 +50,10 @@ app.get('/toNum', function(req, res) {
 	})
 });
 app.get('/plusOne', function(req, res) {
+	var data = {
+		"SSid" : req.query.SSid,
+		"SERVER" : CONFIG.SERVER
+	};
 	if(req.query.SSid == undefined){
 		res.send("Please provide a scoresaber ID <br> Usage: batthew.co.uk:8081/plusOne?SSid=1234")
 		return
@@ -54,7 +70,7 @@ app.get('/ppToNum', async (req :any, res: { send: (arg0: string) => void; }) => 
 });
 
 app.get('/ppToPlayer', async (req: any, res: { send: (arg0: string) => void; }) => {
-    res.send((await getPPDifference(req.query.SSid, req.query.PlayerSSid)).toString());
+    res.send((await getPPDifference(req.query.SSid, req.query.targetSSid)).toString());
 });
 
 app.get('/plusOnePP' ,  async (req: any, res: { send: (arg0: string) => void; }) => {

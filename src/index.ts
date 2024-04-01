@@ -15,10 +15,7 @@ app.set('view engine', 'ejs');
 app.listen(port, () => console.log(`Server listening on port: ${port}`));
 
 app.get('/toPlayer', async function(req, res) {
-	var P2;
-	if (req.query.targetSSid != undefined) {
-		P2 = await ScoreSaberAPI.fetchBasicPlayer(req.query.targetSSid.toString())
-	} else {res.send("Bad url error"); return;}
+
 	console.log(CONFIG.SERVER)
 	var data = {
 		"SSid" : req.query.SSid,
@@ -26,7 +23,12 @@ app.get('/toPlayer', async function(req, res) {
 		"P2name" : P2.name,
 		"SERVER" : CONFIG.SERVER
 	};
-	fs.readFile("./html/overlayToPlayer.html" , "utf-8" , (err : string , html : string) => {
+	if (req.query.PlayerSSid == undefined || req.query.SSid == undefined) {
+		res.send("Please Provide your own scoresaber ID and your targets scoresaber ID in the URL <br> Usage: batthew.co.uk:8081/toPlayer?SSid=1234&targetSSid=10")
+	}
+	P2 = await ScoreSaberAPI.fetchBasicPlayer(req.query.PlayerSSid!.toString())
+	var data = {"SSid" : req.query.SSid , "PlayerSSid" : req.query.PlayerSSid , "P2name" : P2.name};
+	fs.readFile("../html/overlayToPlayer.html" , "utf-8" , (err : string , html : string) => {
 		res.send(ejs.render(html , data))
 	})
 });
@@ -37,6 +39,12 @@ app.get('/toNum', function(req, res) {
 		"num" : req.query.num,
 		"SERVER" : CONFIG.SERVER
 	};
+	console.log(req.query.SSid)
+	if(req.query.SSid == undefined || req.query.num == undefined){
+		res.send("Please provide a scoresaber ID and a target number <br> Usage: batthew.co.uk:8081/toNum?SSid=1234&num=10")
+		return
+	}
+	var data = {"SSid" : req.query.SSid , "num" : req.query.num};
 	fs.readFile("../html/overlayToNum.html" , "utf-8" , (err : any , html : any) => {
 		res.send(ejs.render(html , data))
 	})
@@ -46,6 +54,11 @@ app.get('/plusOne', function(req, res) {
 		"SSid" : req.query.SSid,
 		"SERVER" : CONFIG.SERVER
 	};
+	if(req.query.SSid == undefined){
+		res.send("Please provide a scoresaber ID <br> Usage: batthew.co.uk:8081/plusOne?SSid=1234")
+		return
+	}
+	var data = {"SSid" : req.query.SSid};
 	fs.readFile("../html/overlayPlus1PP.html" , "utf-8" , (err : any , html : any) => {
 		res.send(ejs.render(html , data))
 	})

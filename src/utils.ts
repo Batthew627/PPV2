@@ -1,7 +1,7 @@
 import ScoreSaberAPI, { PlayerScore } from "scoresaber.js";
 import * as fs from "fs";
 
-import * as config from "../config.json"
+import * as config from "./config.json"
 export const CONFIG : iConfig = {
 	SERVER : config.SERVER,
 	COLOUR : config.COLOUR,

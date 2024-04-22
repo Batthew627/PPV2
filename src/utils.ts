@@ -168,7 +168,7 @@ export const calcPpBoundary = (rankedScores: PlayerScore[], expectedPp = 1) => {
 
 //Above code was used from https://github.com/motzel/ppcalc/blob/master/src/
 
-export const  getPPDifference = async (playerID1: string, playerID2 : string):Promise<any> => {
+export const  getPPDifference = async (playerID1: string, playerID2 : string):Promise<Number|string> => {
 	try {
 		const player1PP =(await (ScoreSaberAPI.fetchBasicPlayer(playerID1))).pp
 		const player2PP = (await (ScoreSaberAPI.fetchBasicPlayer(playerID2))).pp
@@ -182,13 +182,14 @@ export const  getPPDifference = async (playerID1: string, playerID2 : string):Pr
 }
 
 
-export const diffToTopX= async(playerID : string,rank : number):Promise<any> => {
+export const diffToTopX= async(playerID : string,rank : number):Promise<Number|string> => {
 	try {
 		const rankX = (await ScoreSaberAPI.fetchPlayerByRank(rank)).id
 		return (getPPDifference(playerID,rankX))
-	} catch (error) {
+	} catch (error:Error) {
 		return(error)
 	}
     //console.log(rankX)
 }
 
+export const scoresInLastX = async(playerID :string, )

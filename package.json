@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:digitalocean": "npm install --production=false && npm run build && npm ci && tsc",
+    "run":"node ./build/index.js"
   },
   "author": "",
   "license": "ISC",

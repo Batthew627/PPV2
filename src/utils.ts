@@ -1,23 +1,9 @@
-import ScoreSaberAPI, { PlayerScore } from "scoresaber.js";
+import ScoreSaberAPI, { Player, PlayerScore } from "scoresaber.js";
 import * as fs from "fs";
-
-import * as config from "./config.json"
-export const CONFIG : iConfig = {
-	SERVER : config.SERVER,
-	COLOUR : config.COLOUR,
-	INTERVAL : config.INTERVAL,
-	ONEPPINTERVAL:config.ONEPPINTERVAL
-};
 
 export const WEIGHT_COEFFICIENT = 0.965;
 export const PP_PER_STAR = 42.114296;
 
-export interface iConfig {
-	SERVER : string,
-	COLOUR:string,
-	INTERVAL:number
-	ONEPPINTERVAL:number
-}
 
 const ppCurve = [
 	{at: 0.0, value: 0.0},
@@ -174,7 +160,7 @@ export const  getPPDifference = async (playerID1: string, playerID2 : string):Pr
 		const player2PP = (await (ScoreSaberAPI.fetchBasicPlayer(playerID2))).pp
 		const difference = Math.floor((player2PP - player1PP)*100)/100
 		return(difference)
-	} catch (error) {
+	} catch (error:unknown) {
 		return("Please double check the scoresaber IDs")
 	}
     //console.log(player1PP)
@@ -186,10 +172,9 @@ export const diffToTopX= async(playerID : string,rank : number):Promise<Number|s
 	try {
 		const rankX = (await ScoreSaberAPI.fetchPlayerByRank(rank)).id
 		return (getPPDifference(playerID,rankX))
-	} catch (error:Error) {
-		return(error)
+	} catch (error:unknown) {
+		return("error")
 	}
     //console.log(rankX)
 }
 
-export const scoresInLastX = async(playerID :string, )

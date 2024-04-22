@@ -1,6 +1,8 @@
+import * as dotenv from 'dotenv'
+dotenv.config()
 import ScoreSaberAPI from "scoresaber.js";
 import express from 'express';
-import { calcPpBoundary, diffToTopX, getPPDifference, CONFIG } from "./utils";
+import { calcPpBoundary, diffToTopX, getPPDifference, } from "./utils";
 
 const app = express();
 const port = 8081;
@@ -18,14 +20,13 @@ app.get('/toPlayer', async function(req, res) {
 
 	var P2;
 	P2 = await ScoreSaberAPI.fetchBasicPlayer(req.query.PlayerSSid!.toString())
-	console.log(CONFIG.SERVER)
 	var data = {
 		"SSid" : req.query.SSid,
 		"targetSSid" : req.query.targetSSid,
 		"P2name" : P2.name,
-		"SERVER" : CONFIG.SERVER,
-		"COLOUR" : CONFIG.COLOUR,
-		"INTERVAL" : CONFIG.INTERVAL
+		"SERVER" : process.env.SERVER,
+		"COLOUR" : process.env.COLOUR,
+		"INTERVAL" : process.env.INTERVAL
 	};
 	if (req.query.PlayerSSid == undefined || req.query.SSid == undefined) {
 		res.send("Please Provide your own scoresaber ID and your targets scoresaber ID in the URL <br> Usage: batthew.co.uk:8081/toPlayer?SSid=1234&targetSSid=10")
@@ -36,12 +37,13 @@ app.get('/toPlayer', async function(req, res) {
 });
 
 app.get('/toNum', function(req, res) {
+	console.log(process.env.SERVER)
 	var data = {
 		"SSid" : req.query.SSid, 
 		"num" : req.query.num,
-		"SERVER" : CONFIG.SERVER,
-		"COLOUR" : CONFIG.COLOUR,
-		"INTERVAL" : CONFIG.INTERVAL
+		"SERVER" : process.env.SERVER,
+		"COLOUR" : process.env.COLOUR,
+		"INTERVAL" : process.env.INTERVAL
 	};
 	console.log(req.query.SSid)
 	if(req.query.SSid == undefined || req.query.num == undefined){
@@ -55,9 +57,9 @@ app.get('/toNum', function(req, res) {
 app.get('/plusOne', function(req, res) {
 	var data = {
 		"SSid" : req.query.SSid,
-		"SERVER" : CONFIG.SERVER,
-		"COLOUR" : CONFIG.COLOUR,
-		"INTERVAL" : CONFIG.ONEPPINTERVAL
+		"SERVER" : process.env.SERVER,
+		"COLOUR" : process.env.COLOUR,
+		"INTERVAL" : process.env.ONEPPINTERVAL
 	};
 	if(req.query.SSid == undefined){
 		res.send("Please provide a scoresaber ID <br> Usage: batthew.co.uk:8081/plusOne?SSid=1234")

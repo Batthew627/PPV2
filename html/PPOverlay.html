@@ -18,6 +18,9 @@
             }
             function SSID(value){
                 scoresaberID = value
+                if (value.includes("https://scoresaber.com/u/")){
+                    scoresaberID = value.slice(25)
+                }
                 if(selectedOption == "PPToNum"){
                     document.getElementById("Rank").style.display="flex"
                 }
@@ -27,6 +30,9 @@
             }
             function toNum(value){
                 rankTarget = value
+                if (value.includes("https://scoresaber.com/u/")){
+                    rankTarget = value.slice(25)
+                }
             }
             function generateLink(){
                 document.getElementById("Tip").style.display="block"
@@ -53,7 +59,7 @@
         crossorigin="anonymous"></script>
     <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Batthews Projects</a>
+            <a class="navbar-brand" href="/">Batthews Projects</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>

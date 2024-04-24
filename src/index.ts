@@ -16,6 +16,13 @@ app.set('view engine', 'ejs');
 
 app.listen(port, () => console.log(`Server listening on port: ${port}`));
 
+app.get('/', function(req, res) {
+	res.sendFile('/html/index.html',{root:'./'});
+})
+app.get('/PPOverlay', function(req, res) {
+	res.sendFile('/html/PPOverlay.html',{root:'./'});
+});
+
 app.get('/toPlayer', async function(req, res) {
 
 	var P2;

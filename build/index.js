@@ -39,6 +39,12 @@ var fs = require("fs");
 app.use(cors());
 app.set('view engine', 'ejs');
 app.listen(port, () => console.log(`Server listening on port: ${port}`));
+app.get('/', function (req, res) {
+    res.sendFile('/html/index.html', { root: './' });
+});
+app.get('/PPOverlay', function (req, res) {
+    res.sendFile('/html/PPOverlay.html', { root: './' });
+});
 app.get('/toPlayer', async function (req, res) {
     var P2;
     P2 = await scoresaber_js_1.default.fetchBasicPlayer(req.query.PlayerSSid.toString());

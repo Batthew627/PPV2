@@ -3,7 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.diffToTopX = exports.getPPDifference = exports.calcPpBoundary = exports.getWhatIfScore = exports.getTotalPlayerPp = exports.getTotalPpFromSortedPps = exports.accFromPpFactor = exports.ppFactorFromAcc = exports.PP_PER_STAR = exports.WEIGHT_COEFFICIENT = void 0;
+exports.diffToTopX = exports.getPPDifference = exports.calcPpBoundary = exports.getTotalPlayerPp = exports.getTotalPpFromSortedPps = exports.PP_PER_STAR = exports.WEIGHT_COEFFICIENT = void 0;
+exports.ppFactorFromAcc = ppFactorFromAcc;
+exports.accFromPpFactor = accFromPpFactor;
+exports.getWhatIfScore = getWhatIfScore;
 const scoresaber_js_1 = __importDefault(require("scoresaber.js"));
 exports.WEIGHT_COEFFICIENT = 0.965;
 exports.PP_PER_STAR = 42.114296;
@@ -62,7 +65,6 @@ function ppFactorFromAcc(acc) {
     let progress = (acc - from.at) / (to.at - from.at);
     return from.value + (to.value - from.value) * progress;
 }
-exports.ppFactorFromAcc = ppFactorFromAcc;
 function accFromPpFactor(ppFactor) {
     if (!ppFactor || ppFactor <= 0)
         return 0;
@@ -74,7 +76,6 @@ function accFromPpFactor(ppFactor) {
     const progress = (ppFactor - from.value) / (to.value - from.value);
     return from.at + (to.at - from.at) * progress;
 }
-exports.accFromPpFactor = accFromPpFactor;
 const getTotalPpFromSortedPps = (ppArray, startIdx = 0) => ppArray.reduce((cum, pp, idx) => cum + Math.pow(exports.WEIGHT_COEFFICIENT, idx + startIdx) * pp, 0);
 exports.getTotalPpFromSortedPps = getTotalPpFromSortedPps;
 const getTotalPp = (scores) => scores && Array.isArray(scores) ? (0, exports.getTotalPpFromSortedPps)(scores.map(s => { var _a; return (_a = s === null || s === void 0 ? void 0 : s.score) === null || _a === void 0 ? void 0 : _a.pp; }).sort((a, b) => b - a)) : null;
@@ -105,7 +106,6 @@ function getWhatIfScore(scores, leaderboardId, pp = 0) {
         diff: newTotalPp - currentTotalPp,
     };
 }
-exports.getWhatIfScore = getWhatIfScore;
 const calcPpBoundary = (rankedScores, expectedPp = 1) => {
     if (!rankedScores || !Array.isArray(rankedScores))
         return null;

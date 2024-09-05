@@ -147,9 +147,9 @@ const getPPDifference = async (playerID1, playerID2) => {
     //console.log(player2PP)
 };
 exports.getPPDifference = getPPDifference;
-const diffToTopX = async (playerID, rank) => {
+const diffToTopX = async (playerID, rank, region) => {
     try {
-        const rankX = (await scoresaber_js_1.default.fetchPlayerByRank(rank)).id;
+        const rankX = (await scoresaber_js_1.default.fetchPlayerByRank(rank, region)).id;
         return ((0, exports.getPPDifference)(playerID, rankX));
     }
     catch (error) {

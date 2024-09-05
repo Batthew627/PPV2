@@ -70,7 +70,8 @@ app.get('/toNum', function (req, res) {
         "num": req.query.num,
         "SERVER": process.env.SERVER,
         "COLOUR": process.env.COLOUR,
-        "INTERVAL": process.env.INTERVAL
+        "INTERVAL": process.env.INTERVAL,
+        "region": req.query.region
     };
     console.log(req.query.SSid);
     if (req.query.SSid == undefined || req.query.num == undefined) {
@@ -97,7 +98,7 @@ app.get('/plusOne', function (req, res) {
     });
 });
 app.get('/ppToNum', async (req, res) => {
-    res.send((await (0, utils_1.diffToTopX)(req.query.SSid, req.query.num)).toString());
+    res.send((await (0, utils_1.diffToTopX)(req.query.SSid, req.query.num, req.query.region)).toString());
 });
 app.get('/ppToPlayer', async (req, res) => {
     res.send((await (0, utils_1.getPPDifference)(req.query.SSid, req.query.targetSSid)).toString());

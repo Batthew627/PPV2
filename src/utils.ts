@@ -168,9 +168,9 @@ export const  getPPDifference = async (playerID1: string, playerID2 : string):Pr
 }
 
 
-export const diffToTopX= async(playerID : string,rank : number):Promise<Number|string> => {
+export const diffToTopX= async(playerID : string,rank : number,region:string | undefined):Promise<Number|string> => {
 	try {
-		const rankX = (await ScoreSaberAPI.fetchPlayerByRank(rank)).id
+		const rankX = (await ScoreSaberAPI.fetchPlayerByRank(rank,region)).id
 		return (getPPDifference(playerID,rankX))
 	} catch (error:unknown) {
 		return("error")

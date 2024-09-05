@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>About Batthew</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1f2937;
+                color: #f9fafb;
+            }
+
+            .bg-light {
+                background-color: #111827;
+            }
+
+            .text-dark {
+                color: #f9fafb;
+            }
+
+            .shadow-dark {
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
+            }
+        }
+
+        /* Fade-in animations */
+        .fade-in {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .fade-in-visible {
+            opacity: 1;
+        }
+
+        /* Scale hover effect for links */
+        .scale-hover:hover {
+            transform: scale(1.05);
+            transition: transform 0.2s;
+        }
+
+        /* Bounce effect for headings */
+        .bounce {
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-light text-dark">
+
+    <div class="container mx-auto p-8 fade-in" id="page-content">
+        <!-- Header -->
+        <nav class="bg-gray-900 p-4">
+            <div class="container mx-auto flex justify-between items-center">
+                <a class="text-white text-2xl font-bold" href="/">Batthew's Projects</a>
+                <button class="text-white lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+                <div class="hidden lg:flex space-x-4">
+                    <a href="/about" class="text-gray-300 hover:text-white scale-hover">About Me</a>
+                    <a href="/PPOverlay" class="text-gray-300 hover:text-white scale-hover">PP Overlay</a>
+                    <a href="https://discord.gg/DADyYFYWwS" class="text-gray-300 hover:text-white scale-hover">Sniper
+                        Bot
+                        Discord</a>
+                    <a href="https://github.com/Batthew627"
+                        class="text-gray-300 hover:text-white scale-hover">GitHub</a>
+                </div>
+            </div>
+        </nav>
+
+        <h1 class="text-2xl font-bold bounce">About Me</h1>
+        <!-- Personal Info -->
+        <section class="mb-10 bg-light p-6 rounded-lg shadow-dark fade-in">
+            <h2 class="text-2xl font-semibold mb-4">Personal Information</h2>
+            <ul class="list-disc pl-5 space-y-2">
+                <li><strong>Name:</strong> Batthew (Bat / Connor)</li>
+                <li><strong>Pronouns:</strong> any</li>
+                <li><strong>Age:</strong> 22</li>
+                <li><strong>Birthday:</strong> March 30, 2002</li>
+                <li><strong>Favorite Music:</strong> Metalcore, Punk</li>
+                <li><strong>Favorite Band:</strong> Bring Me The Horizon</li>
+            </ul>
+        </section>
+
+        <!-- Games Info -->
+        <section class="mb-10 bg-light p-6 rounded-lg shadow-dark fade-in">
+            <h2 class="text-2xl font-semibold mb-4">Games Batthew Plays</h2>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-blue-400 flex items-center scale-hover">
+                    Beat Saber
+                    <a href="https://scoresaber.com/u/76561198121538359" class="scale-hover"><img
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrgvb0G18JPIsY4jKDc2CkQb5TPqpJEbqPlg&s"
+                            alt="scoresaber" class="ml-2" width="20px" height="20px"></a>
+                    <a href="https://beatleader.xyz/u/76561198121538359" class="scale-hover"><img
+                            src="https://beatleader.xyz/assets/logo-small.png" alt="scoresaber" class="ml-2"
+                            width="20px" height="20px"></a>
+                    <a href="https://beatsaver.com/profile/101455" class="scale-hover"><img
+                            src="https://www.beatsaver.com/static/favicon/apple-touch-icon.png" alt="beatsaver"
+                            class="ml-2" width="20px" height="20px"></a>
+                </h3>
+
+                <p><strong>Favorite Map Style:</strong> Tech/Acc</p>
+                <h4 class="text-lg font-semibold">Coordinating Roles:</h4>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li>Coordinator of the Year - BeatKhana Awards</li>
+                    <li>Head Coordinator - Beat Saber University League</li>
+                    <li>Head Coordinator - Upcoming Acc Saber Tournament</li>
+                    <li>Coordinator - World Cup</li>
+                    <li>Coordinator - European Championship</li>
+                </ul>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-blue-400 scale-hover">Overwatch</h3>
+                <p><strong>Peak Rank:</strong> Silver 3</p>
+                <p><strong>Main:</strong> generally a dva main but flex a lot</p>
+            </div>
+        </section>
+
+        <!-- Hobbies -->
+        <section class="mb-10 bg-light p-6 rounded-lg shadow-dark fade-in">
+            <h2 class="text-2xl font-semibold mb-4">Hobbies</h2>
+            <ul class="list-disc pl-5 space-y-2">
+                <li>Coding (currently working on a new website for BeatKhana, coming soon™)</li>
+                <li>Coordinating tournaments</li>
+                <li>Been watching a lot of F1 recently</li>
+            </ul>
+        </section>
+    </div>
+
+    <!-- Script for fade-in effect on page load -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.fade-in').forEach((el) => {
+                el.classList.add('fade-in-visible');
+            });
+        });
+    </script>
+</body>
+
+</html>

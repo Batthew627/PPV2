@@ -1,0 +1,56 @@
+{
+	"name": "Batthew",
+	"aliases": [
+		"bat",
+		"Connor"
+	],
+	"age": 22,
+	"Birthday": "30/03/2002",
+	"games": [
+		{
+			"Beat saber": {
+				"peak rank": {
+					"global": 57,
+					"UK": 6
+				},
+				"favourite map style": "tech/acc",
+				"Coordinating": [
+					{
+						"Tournament": "BeatKhana Awards",
+						"role": "Coordinator of the year"
+					},
+					{
+						"Tournament": "Beatsaber University League",
+						"role": "Head Coordinator"
+					},
+					{
+						"Tournament": "up coming Acc saber tournament",
+						"role": "Head Coordinator"
+					},
+					{
+						"Tournament": "World Cup",
+						"role": "Coordinator"
+					},
+					{
+						"Tournament": "European Championship",
+						"role": "Coordinator"
+					}
+				]
+			},
+			"OSU": {
+				"peak rank": "i can pass like 4*s",
+				"playstyle": "speed ig"
+			},
+			"Minecraft": {
+				"peak rank": "what?",
+				"playstyle": "I like mining and making like big farms"
+			}
+		}
+	],
+	"hobbies": [
+		"Coding(currently working on a new website for beatkhana (coming soonTM)",
+		"Coordinating"
+	],
+	"music taste": "I like alot of music but i mostly listen to metal core or punk",
+	"fav band": "uhhhh probably bring me ig"
+}

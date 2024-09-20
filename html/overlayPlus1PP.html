@@ -11,9 +11,9 @@
     setInterval(function () {
       fetch('<%-SERVER%>/plusOnePP?SSid=<%-SSid%>')
         .then(response => response.text())
-        .then(data => document.getElementById('value').innerText = `${data} Raw PP = +1 Weighted PP`)
+        .then(data => document.getElementById('value').innerText=`${data} Raw PP = +1 Weighted PP`)
         .catch(error => console.error(error));
-    }, <% -INTERVAL %>); // update every 10 second
+    }, <%-ONEPPINTERVAL%>); // update every 10 second
   </script>
 </body>
 

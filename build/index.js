@@ -90,7 +90,7 @@ app.get('/plusOne', function (req, res) {
         SSid: req.query.SSid,
         SERVER: process.env.SERVER,
         COLOUR: process.env.COLOUR,
-        INTERVAL: process.env.ONEPPINTERVAL,
+        ONEPPINTERVAL: 60000,
     };
     if (req.query.SSid == undefined) {
         res.send('Please provide a scoresaber ID <br> Usage: batthew.co.uk:8081/plusOne?SSid=1234');

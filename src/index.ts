@@ -76,7 +76,7 @@ app.get('/plusOne', function (req, res) {
 		SSid: req.query.SSid,
 		SERVER: process.env.SERVER,
 		COLOUR: process.env.COLOUR,
-		ONEPPINTERVAL: process.env.ONEPPINTERVAL,
+		ONEPPINTERVAL: 60000,
 	};
 	if (req.query.SSid == undefined) {
 		res.send(

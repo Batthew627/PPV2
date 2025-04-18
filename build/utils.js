@@ -53,7 +53,7 @@ function ppFactorFromAcc(acc) {
     if (!acc || acc <= 0) {
         return 0;
     }
-    let index = ppCurve.findIndex(o => o.at >= acc);
+    let index = ppCurve.findIndex((o) => o.at >= acc);
     if (index === -1) {
         return ppCurve[ppCurve.length - 1].value;
     }
@@ -68,7 +68,7 @@ function ppFactorFromAcc(acc) {
 function accFromPpFactor(ppFactor) {
     if (!ppFactor || ppFactor <= 0)
         return 0;
-    const idx = ppCurve.findIndex(o => o.value >= ppFactor);
+    const idx = ppCurve.findIndex((o) => o.value >= ppFactor);
     if (idx < 0)
         return ppCurve[ppCurve.length - 1].at;
     const from = ppCurve[idx - 1];
@@ -78,7 +78,9 @@ function accFromPpFactor(ppFactor) {
 }
 const getTotalPpFromSortedPps = (ppArray, startIdx = 0) => ppArray.reduce((cum, pp, idx) => cum + Math.pow(exports.WEIGHT_COEFFICIENT, idx + startIdx) * pp, 0);
 exports.getTotalPpFromSortedPps = getTotalPpFromSortedPps;
-const getTotalPp = (scores) => scores && Array.isArray(scores) ? (0, exports.getTotalPpFromSortedPps)(scores.map(s => { var _a; return (_a = s === null || s === void 0 ? void 0 : s.score) === null || _a === void 0 ? void 0 : _a.pp; }).sort((a, b) => b - a)) : null;
+const getTotalPp = (scores) => scores && Array.isArray(scores)
+    ? (0, exports.getTotalPpFromSortedPps)(scores.map((s) => { var _a; return (_a = s === null || s === void 0 ? void 0 : s.score) === null || _a === void 0 ? void 0 : _a.pp; }).sort((a, b) => b - a))
+    : null;
 const convertScoresToObject = (scores, idFunc = (score) => { var _a; return (_a = score === null || score === void 0 ? void 0 : score.leaderboard) === null || _a === void 0 ? void 0 : _a.id; }, asArray = false) => scores.reduce((scoresObj, score) => {
     const _id = idFunc(score);
     if (!_id)
@@ -99,24 +101,31 @@ function getWhatIfScore(scores, leaderboardId, pp = 0) {
     const currentTotalPp = (0, exports.getTotalPlayerPp)(scores);
     if (!currentTotalPp)
         return null;
-    const newTotalPp = (0, exports.getTotalPlayerPp)(scores, { [leaderboardId]: { score: { pp } } });
+    const newTotalPp = (0, exports.getTotalPlayerPp)(scores, {
+        [leaderboardId]: { score: { pp } },
+    });
     return {
         currentTotalPp,
         newTotalPp,
         diff: newTotalPp - currentTotalPp,
     };
 }
+const ppBoundaryCache = {}; // Cache for PP boundaries
 const calcPpBoundary = (rankedScores, expectedPp = 1) => {
     if (!rankedScores || !Array.isArray(rankedScores))
         return null;
+    const cacheKey = rankedScores.map((s) => { var _a, _b; return (_b = (_a = s === null || s === void 0 ? void 0 : s.score) === null || _a === void 0 ? void 0 : _a.pp) !== null && _b !== void 0 ? _b : 0; }).join('-') + '-' + expectedPp;
+    if (ppBoundaryCache[cacheKey]) {
+        return ppBoundaryCache[cacheKey]; // Return from cache if available
+    }
     const calcRawPpAtIdx = (bottomScores, idx, expected) => {
         const oldBottomPp = (0, exports.getTotalPpFromSortedPps)(bottomScores, idx);
         const newBottomPp = (0, exports.getTotalPpFromSortedPps)(bottomScores, idx + 1);
-        // 0.965^idx * rawPpToFind = expected + oldBottomPp - newBottomPp;
-        // rawPpToFind = (expected + oldBottomPp - newBottomPp) / 0.965^idx;
-        return (expected + oldBottomPp - newBottomPp) / Math.pow(exports.WEIGHT_COEFFICIENT, idx);
+        return ((expected + oldBottomPp - newBottomPp) / Math.pow(exports.WEIGHT_COEFFICIENT, idx));
     };
-    const rankedScorePps = rankedScores.map(s => { var _a, _b; return (_b = (_a = s === null || s === void 0 ? void 0 : s.score) === null || _a === void 0 ? void 0 : _a.pp) !== null && _b !== void 0 ? _b : 0; }).sort((a, b) => b - a);
+    const rankedScorePps = rankedScores
+        .map((s) => { var _a, _b; return (_b = (_a = s === null || s === void 0 ? void 0 : s.score) === null || _a === void 0 ? void 0 : _a.pp) !== null && _b !== void 0 ? _b : 0; })
+        .sort((a, b) => b - a);
     let idx = rankedScorePps.length - 1;
     while (idx >= 0) {
         const bottomSlice = rankedScorePps.slice(idx);
@@ -125,23 +134,27 @@ const calcPpBoundary = (rankedScores, expectedPp = 1) => {
         const modifiedBottomPp = (0, exports.getTotalPpFromSortedPps)(bottomSlice, idx);
         const diff = modifiedBottomPp - bottomPp;
         if (diff > expectedPp) {
-            return calcRawPpAtIdx(rankedScorePps.slice(idx + 1), idx + 1, expectedPp);
+            const result = calcRawPpAtIdx(rankedScorePps.slice(idx + 1), idx + 1, expectedPp);
+            ppBoundaryCache[cacheKey] = result; // Cache the result
+            return result;
         }
         idx--;
     }
-    return calcRawPpAtIdx(rankedScorePps, 0, expectedPp);
+    const result = calcRawPpAtIdx(rankedScorePps, 0, expectedPp);
+    ppBoundaryCache[cacheKey] = result; // Cache the result
+    return result;
 };
 exports.calcPpBoundary = calcPpBoundary;
 //Above code was used from https://github.com/motzel/ppcalc/blob/master/src/
 const getPPDifference = async (playerID1, playerID2) => {
     try {
-        const player1PP = (await (scoresaber_js_1.default.fetchBasicPlayer(playerID1))).pp;
-        const player2PP = (await (scoresaber_js_1.default.fetchBasicPlayer(playerID2))).pp;
+        const player1PP = (await scoresaber_js_1.default.fetchBasicPlayer(playerID1)).pp;
+        const player2PP = (await scoresaber_js_1.default.fetchBasicPlayer(playerID2)).pp;
         const difference = Math.floor((player2PP - player1PP) * 100) / 100;
-        return (difference);
+        return difference;
     }
     catch (error) {
-        return ("Please double check the scoresaber IDs");
+        return 'Please double check the scoresaber IDs';
     }
     //console.log(player1PP)
     //console.log(player2PP)
@@ -150,10 +163,10 @@ exports.getPPDifference = getPPDifference;
 const diffToTopX = async (playerID, rank, region) => {
     try {
         const rankX = (await scoresaber_js_1.default.fetchPlayerByRank(rank, region)).id;
-        return ((0, exports.getPPDifference)(playerID, rankX));
+        return (0, exports.getPPDifference)(playerID, rankX);
     }
     catch (error) {
-        return ("error");
+        return 'error';
     }
     //console.log(rankX)
 };
